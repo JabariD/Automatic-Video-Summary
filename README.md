@@ -1,3 +1,5 @@
+![Automatic Video Summary Logo](docs\logo.png)
+
 ### Objective
 
 Define a video summary Google extension that can be used any website playing a video.
