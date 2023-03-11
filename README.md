@@ -1,4 +1,5 @@
-![Automatic Video Summary Logo](docs\logo.png)
+![Automatic Video Summary Logo](https://github.com/JabariD/Automatic-Video-Summary/blob/main/docs/logo.png?raw=true)
+
 
 ### Objective
 
