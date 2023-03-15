@@ -5,32 +5,12 @@ import {getYouTubeTranscript, VideoSegment} from './youtube/youtube';
 class Transcript {
     // Gets the transcript for the youtube video from the url passed in and converts it common format.
     // Note: Main will call this function to get the transcript. So this should be treated as a "black box".
-    getTranscript(url: string): VideoSegment[] {
-        const transcript: VideoSegment[] = this.getTranscriptFromUrl(url);
-        return this.convertTranscriptToCommonFormat(transcript);
-    }
-
-    private getTranscriptFromUrl(url: string): any {
-        const transcript = {
-            "transcript": [
-                {
-                    "start": 0.0,
-                    "duration": 1.0,
-                    "text": "Hello World!"
-                },
-                {
-                    "start": 1.0,
-                    "duration": 2.0,
-                    "text": "Hello World!"
-                },
-                {
-                    "start": 2.0,
-                    "duration": 3.0,
-                    "text": "Hello World!"
-                }
-            ]
-        };
-        return transcript;
+    async getTranscript(url: string): Promise<VideoSegment[]> {
+        try {
+             return await getYouTubeTranscript(url);
+        } catch (error) {
+            return error;
+        }
     }
     
     // Converts the transcript to a common format
