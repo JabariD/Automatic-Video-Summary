@@ -11,6 +11,8 @@ It returns the transcript in the following format:
     ...
 ]
 
+Note: Typically this will contain about 100-500 VideoSegments as a typical YouTube video is about 5-10 minutes long.
+
 */
 
 const YoutubeTranscript = require('youtube-transcript').default;
