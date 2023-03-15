@@ -17,7 +17,6 @@ Note: Typically this will contain about 100-500 VideoSegments as a typical YouTu
 
 const YoutubeTranscript = require('youtube-transcript').default;
 
-// TODO(paytondennis): Move interface to common folder and file.
 // This interface defines 1 segment of the transcript
 interface VideoSegment {
     text: string; // The text of the segment
