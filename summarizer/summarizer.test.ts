@@ -21,6 +21,31 @@ describe("Summarizer", () => {
 
   it("should normalize multiple segments", async () => {
     const videoSegments: VideoSegment[] = [
+      {
+        text: "access to it would have to be a really",
+        duration: 4320,
+        offset: 179400,
+      },
+      {
+        text: "great video yeah yeah right individual",
+        duration: 4500,
+        offset: 181319,
+      },
+      {
+        text: "video yeah I well that's why it's there",
+        duration: 3239,
+        offset: 183720,
+      },
+    ];
+
+    // TODO(JabariD): Refactor this to use the Summarizer class instead of the Summarizer class's private methods. (https://dev.to/danywalls/testing-private-methods-in-typescript-3np5)
+    const sanitizedText = new Summarizer()["normalizeText"](videoSegments);
+
+    expect(sanitizedText).toBe("access to it would have to be a really great video yeah yeah right individual video yeah I well that's why it's there");
+  });
+
+  it("should normalize multiple segments with invalid characters", async () => {
+    const videoSegments: VideoSegment[] = [
       { text: "foo-bar    \n @", duration: 3000, offset: 0 },
       { text: "normalized", duration: 3000, offset: 3000 },
       { text: "     checker,@  \n", duration: 3000, offset: 6000 },
