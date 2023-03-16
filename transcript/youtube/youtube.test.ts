@@ -16,4 +16,17 @@ describe("YouTubeTranscriptTest", () => {
       "All right, so here we are in front of the elephants,"
     );
   });
+
+  it("should return error because no transcript is available", async () => {
+    try {
+      await getYouTubeTranscript("https://www.youtube.com/watch?v=ZV7X9Q2LZjg"); // Fireplace video.
+
+      // Fail if request is successful.
+      expect(1).toBe(0);
+    } catch (e) {
+      expect(e.message).toBe(
+        "[YoutubeTranscript] 🚨 Error: Transcript is disabled on this video"
+      );
+    }
+  });
 });

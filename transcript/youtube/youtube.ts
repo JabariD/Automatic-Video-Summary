@@ -25,7 +25,7 @@ interface VideoSegment {
 }
 
 async function getYouTubeTranscript(url: string): Promise<VideoSegment[]>  {
-    const transcript : VideoSegment[] = await YoutubeTranscript.fetchTranscript(url);
+    const transcript : Promise<VideoSegment[]> = await YoutubeTranscript.fetchTranscript(url);
     return transcript;
 }
 
