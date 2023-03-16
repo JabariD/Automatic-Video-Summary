@@ -25,8 +25,8 @@ class Summarizer {
         // Concatenate all the `text` fields of the `textSegments` array into a single string
         const text = videoSegments.map(segment => segment.text).join(' ');
 
-        // Remove all non-alphanumeric characters and replacing them with spaces, but include commas.
-        const normalizedText = text.replace(/[^a-zA-Z0-9,]/g, ' ');
+        // Remove all non-alphanumeric characters and replacing them with spaces, but include commas and dashes.
+        const normalizedText = text.replace(/[^a-zA-Z0-9,-]/g, ' ');
 
         // Remove all extra spaces
         const finalText = normalizedText.trim().replace(/\s+/g, ' ');
