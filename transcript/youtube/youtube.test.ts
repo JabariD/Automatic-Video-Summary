@@ -15,7 +15,20 @@ describe("YouTubeTranscriptTest", () => {
     expect(transcript[0].text).toBe(
       "All right, so here we are in front of the elephants,"
     );
-  });
+  }, 10000); // set timeout to be 10 seconds
+
+  it("should return transcript for playlist youtube video", async () => {
+    const transcript: VideoSegment[] = await getYouTubeTranscript(
+      "https://www.youtube.com/watch?v=oGjXSrJrs34&list=PLR33YFXmwO30W8YdeCKbTAI6zS43IdGaf&index=4&t=319s"
+    ); // Me at the zoo video.
+
+    // remove \n from the text
+    transcript.forEach((segment) => {
+      segment.text = segment.text.replace(/\n/g, " ");
+    });
+
+    expect(transcript[0].text).toBe("hey youtube");
+  }, 10000); // set timeout to be 10 seconds
 
   it("should return error because no transcript is available", async () => {
     try {
