@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "JabariD",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.4.0",
@@ -14,6 +14,8 @@
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
+    "openai": "^3.2.1",
     "youtube-transcript": "^1.0.4"
   }
 }
