@@ -24,4 +24,16 @@ describe("API", () => {
     // Expect words that more than likely is in the summary
     expect(summary).toContain("Pentecost");
   }, 30000); // set timeout to be 30 seconds (note this uses an API and make time to generate)
+
+  // Note: This test should be last because it resets the API key.
+  it("should return error for invalid API key", async () => {
+    try {
+    process.env.API_KEY = "";
+    const api = new API();
+    // This should throw an error because the API key is invalid.
+      throw new Error("The test did not throw an error.");
+    } catch (e) {
+      expect(e.message).toContain("API_KEY not found");
+    }
+  });
 });
