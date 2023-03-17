@@ -41,7 +41,9 @@ describe("Summarizer", () => {
     // TODO(JabariD): Refactor this to use the Summarizer class instead of the Summarizer class's private methods. (https://dev.to/danywalls/testing-private-methods-in-typescript-3np5)
     const sanitizedText = new Summarizer()["normalizeText"](videoSegments);
 
-    expect(sanitizedText).toBe("access to it would have to be a really great video yeah yeah right individual video yeah I well that's why it's there");
+    expect(sanitizedText).toBe(
+      "access to it would have to be a really great video yeah yeah right individual video yeah I well that's why it's there"
+    );
   });
 
   it("should normalize multiple segments with invalid characters", async () => {
@@ -55,5 +57,33 @@ describe("Summarizer", () => {
     const sanitizedText = new Summarizer()["normalizeText"](videoSegments);
 
     expect(sanitizedText).toBe("foo-bar normalized checker,");
+  });
+
+  it("should summarize video segments", async () => {
+    const videoSegments: VideoSegment[] = [
+      {
+        text: "All right, so here we are in front of the, uh, elephants   \n",
+        duration: 3000,
+        offset: 0,
+      },
+      {
+        text: ", and the cool thing about these guys is that, is that they have really, really",
+        duration: 6000,
+        offset: 3000,
+      },
+      {
+        text: ", really long, um, trunks, and that's, that's cool, and that's pretty much all there is to say.",
+        duration: 9000,
+        offset: 6000,
+      },
+    ];
+
+    const summarizer = new Summarizer();
+    const summary = await summarizer.getSummary(videoSegments);
+
+    console.log(summary);
+
+    expect(summary).toContain("elephants");
+    expect(summary).toContain("trunks");
   });
 });

@@ -1,7 +1,12 @@
 import { VideoSegment } from '../transcript/youtube/youtube';
+import API from "./ai/api"
 
 // Summarizer 
 class Summarizer {
+    constructor() {
+        // Summarizer must have valid API instance to work.
+        this.API_ = new API();
+    }
     
     // Public function to summarize the video segments. Returns Error if there is an error in the summarization process.
     async getSummary(videoSegments: VideoSegment[]): Promise<string> {
@@ -16,8 +21,7 @@ class Summarizer {
     private async summarize(videoSegments: VideoSegment[]) : Promise<string> {
         // Normalizes the video segments.
         const sanitizedText : string = this.normalizeText(videoSegments);
-
-        return sanitizedText;
+        return await this.API_.summarizeVideo(sanitizedText);
     }
 
     // Returns a normalized (i.e. no special characters, no extra spaces) string of the text in the video segments.
@@ -32,7 +36,8 @@ class Summarizer {
         const finalText = normalizedText.trim().replace(/\s+/g, ' ');
         return finalText;
       }
-    
+
+    private API_ : API;
 
 };
 

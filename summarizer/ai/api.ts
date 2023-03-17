@@ -27,7 +27,7 @@ class API {
   }
 
   // Main entry point of API. Returns a summary of the video. Returns an error if there is an error.
-  async summarizeVideo(text: string): Promise<string | Error> {
+  async summarizeVideo(text: string): Promise<string> {
     let response: string;
     try {
       response = await this.sendRequestToAPI(text);
