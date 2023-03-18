@@ -14,8 +14,10 @@
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.2",
     "dotenv": "^16.0.3",
     "openai": "^3.2.1",
+    "textchunk": "^1.1.0",
     "youtube-transcript": "^1.0.4"
   }
 }
