@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = __importDefault(require("./api"));
 // TODO(payton): Fix flaky test because API returns different results each time.
 describe("API", function () {
@@ -47,7 +47,7 @@ describe("API", function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    api = new api_1["default"]();
+                    api = new api_1.default();
                     return [4 /*yield*/, api.summarizeVideo("All right, so here we are in front of the, uh, elephants, and the cool thing about these guys is that, is that they have really, really, really long, um, trunks, and that's, that's cool, and that's pretty much all there is to say.")];
                 case 1:
                     summary = _a.sent();
@@ -64,7 +64,7 @@ describe("API", function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    api = new api_1["default"]();
+                    api = new api_1.default();
                     text = "When the day of Pentecost came, they were all together in one place. Suddenly a sound like the blowing of a violent wind came from heaven and filled the whole house where they were sitting. They saw what seemed to be tongues of fire that separated and came to rest on each of them. All of them were filled with the Holy Spirit and began to speak in other tongues as the Spirit enabled them. Now there were staying in Jerusalem God-fearing Jews from every nation under heaven. When they heard this sound, a crowd came together in bewilderment, because each one heard their own language being spoken. Utterly amazed, they asked: “Aren’t all these who are speaking Galileans? Then how is it that each of us hears them in our native language? Parthians, Medes and Elamites; residents of Mesopotamia, Judea and Cappadocia, Pontus and Asia, Phrygia and Pamphylia, Egypt and the parts of Libya near Cyrene; visitors from Rome (both Jews and converts to Judaism); Cretans and Arabs—we hear them declaring the wonders of God in our own tongues!” Amazed and perplexed, they asked one another, “What does this mean?”";
                     return [4 /*yield*/, api.summarizeVideo(text)];
                 case 1:
@@ -82,7 +82,7 @@ describe("API", function () {
         return __generator(this, function (_a) {
             try {
                 process.env.API_KEY = "";
-                api = new api_1["default"]();
+                api = new api_1.default();
                 // This should throw an error because the API key is invalid.
                 throw new Error("The test did not throw an error.");
             }

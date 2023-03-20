@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var summarizer_1 = require("./summarizer");
 describe("Summarizer", function () {
     it("should normalize text", function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -45,7 +45,7 @@ describe("Summarizer", function () {
                 {
                     text: "All right, so here we are in front of the elephants,\n    very cool",
                     duration: 3000,
-                    offset: 0
+                    offset: 0,
                 },
             ];
             sanitizedText = new summarizer_1.Summarizer()["normalizeText"](videoSegments);
@@ -60,17 +60,17 @@ describe("Summarizer", function () {
                 {
                     text: "access to it would have to be a really",
                     duration: 4320,
-                    offset: 179400
+                    offset: 179400,
                 },
                 {
                     text: "great video yeah yeah right individual",
                     duration: 4500,
-                    offset: 181319
+                    offset: 181319,
                 },
                 {
                     text: "video yeah I well that's why it's there",
                     duration: 3239,
-                    offset: 183720
+                    offset: 183720,
                 },
             ];
             sanitizedText = new summarizer_1.Summarizer()["normalizeText"](videoSegments);
@@ -100,17 +100,17 @@ describe("Summarizer", function () {
                         {
                             text: "All right, so here we are in front of the, uh, elephants   \n",
                             duration: 3000,
-                            offset: 0
+                            offset: 0,
                         },
                         {
                             text: ", and the cool thing about these guys is that, is that they have really, really",
                             duration: 6000,
-                            offset: 3000
+                            offset: 3000,
                         },
                         {
                             text: ", really long, um, trunks, and that's, that's cool, and that's pretty much all there is to say.",
                             duration: 9000,
-                            offset: 6000
+                            offset: 6000,
                         },
                     ];
                     summarizer = new summarizer_1.Summarizer();

@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.SourceValidator = void 0;
 // SourceValidator class is used to validate the source of the video.
 var SourceValidator = /** @class */ (function () {

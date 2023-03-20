@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var source_validator_1 = require("./source_validator");
 describe("SourceValidator", function () {
     it("should return true for valid youtube url", function () {

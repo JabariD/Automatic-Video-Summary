@@ -42,7 +42,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 var openai_1 = require("openai");
 var tiktoken_1 = require("@dqbd/tiktoken");
@@ -58,7 +58,7 @@ var API = /** @class */ (function () {
             throw api_key_or_error;
         }
         var configuration = new openai_1.Configuration({
-            apiKey: api_key_or_error.toString()
+            apiKey: api_key_or_error.toString(),
         });
         this.encClient_ = (0, tiktoken_1.encoding_for_model)("gpt-3.5-turbo");
         this.OpenAiClient_ = new openai_1.OpenAIApi(configuration);
@@ -176,12 +176,12 @@ var API = /** @class */ (function () {
                         starterInstructionsAndPrompt = [
                             {
                                 role: "system",
-                                content: "You are SummarizerGPT. You are summarizing one YouTube video. You are very intelligent and create very unique summaries. Feel free to pick an interesting thing said and expand upon it a bit. Try to be as helpful as possible."
+                                content: "You are SummarizerGPT. You are summarizing one YouTube video. You are very intelligent and create very unique summaries. Feel free to pick an interesting thing said and expand upon it a bit. Try to be as helpful as possible.",
                             },
                             {
                                 role: "user",
                                 content: "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Here's the video transcription: " +
-                                    text
+                                    text,
                             },
                         ];
                         return [4 /*yield*/, this.OpenAiClient_.createChatCompletion({
@@ -189,7 +189,7 @@ var API = /** @class */ (function () {
                                 max_tokens: 650,
                                 model: this.kModel_,
                                 temperature: 0.9,
-                                frequency_penalty: 1.2
+                                frequency_penalty: 1.2, // positive values penalize new tokens based on existing frequency | lower values increase the likelihood of new tokens based on existing frequency
                             })];
                     case 1:
                         response = _b.sent();
@@ -214,7 +214,7 @@ var API = /** @class */ (function () {
     };
     return API;
 }());
-exports["default"] = API;
+exports.default = API;
 /*
 Open questions:
 1. The exact prompt to use for the API?

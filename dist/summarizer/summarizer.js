@@ -38,14 +38,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Summarizer = void 0;
 var api_1 = __importDefault(require("./ai/api"));
 // Summarizer 
 var Summarizer = /** @class */ (function () {
     function Summarizer() {
         // Summarizer must have valid API instance to work.
-        this.API_ = new api_1["default"]();
+        this.API_ = new api_1.default();
     }
     // Public function to summarize the video segments. Returns Error if there is an error in the summarization process.
     Summarizer.prototype.getSummary = function (videoSegments) {
