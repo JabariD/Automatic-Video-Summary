@@ -13,4 +13,4 @@ class SourceValidator {
   }
 }
 
-export default SourceValidator;
+export { SourceValidator };

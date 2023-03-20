@@ -1,4 +1,4 @@
-import SourceValidator from "./source_validator";
+import { SourceValidator } from "./source_validator";
 
 describe("SourceValidator", () => {
   it("should return true for valid youtube url", () => {

@@ -143,10 +143,15 @@ class API {
       },
     ];
 
+    // It's possible the API could be down. Check status here: https://status.openai.com/
+    // TODO(payton): Upgrade to GPT4 when ready.
+    // TODO(payton): Experiment with a different model. (hint hint Google model).
     const response = await this.OpenAiClient_.createChatCompletion({
       messages: starterInstructionsAndPrompt,
-      max_tokens: 550, // Note: Matches with kTokensCutOff_. For ref: https://platform.openai.com/docs/models/gpt-3-5
+      max_tokens: 650, // Note: Matches with kTokensCutOff_. For ref: https://platform.openai.com/docs/models/gpt-3-5
       model: this.kModel_,
+      temperature: 0.9, // higher temperature = more creative, less coherent | lower temperature = less creative, more focused and deterministic
+      frequency_penalty: 1.2, // positive values penalize new tokens based on existing frequency | lower values increase the likelihood of new tokens based on existing frequency
     });
 
     return response.data.choices[0].message?.content;
@@ -171,7 +176,7 @@ class API {
 
   private kModel_ = "gpt-3.5-turbo";
   private encClient_ : Tiktoken;
-  private kTokensCutOff_: number = 3500; // Note: Matches with max_tokens in SendRequestToAPI(). For ref: https://platform.openai.com/docs/models/gpt-3-5
+  private kTokensCutOff_: number = 3400; // Note: Matches with max_tokens in SendRequestToAPI(). For ref: https://platform.openai.com/docs/models/gpt-3-5
   private OpenAiClient_: OpenAIApi;
 }
 
