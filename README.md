@@ -1,5 +1,7 @@
 ![Automatic Video Summary Logo](https://github.com/JabariD/Automatic-Video-Summary/blob/main/docs/logo.png?raw=true)
 
+  
+  
 
 ### Objective
 
@@ -51,6 +53,12 @@ For the backend hosting we are using Google Cloud Run Functions. This assumes yo
 - The runtime we are using is nodejs18
 - Notice the src is the dist. (which is why we to npm run build)
 - `summarize` is the JavaScript function that Google Cloud looks for to build. (the function path is in ./dist/index.js)
+
+#### Debugging
+If you get the error: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable.
+- This doesn't mean our container didn't listen to proper port, but that it FAILED TO START. 
+- This commonly occurs when we forget to copy the package.json into the ./dist directory. Without the package.json, the container doesn't know how to build the project.
+- So note: This means if (not your local instance) but if the remote machine cannot start your app and listen you get this error. So you have to give the remote machine everything it needs to do that. (in our case the package.json).
 
 ### Database
 Plan is to use Firebase for now.
