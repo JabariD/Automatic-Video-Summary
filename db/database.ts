@@ -34,6 +34,12 @@ class Database {
 
         let summaries = querySnapshot.docs[0].get(kFSUserSummariesField);
 
+        // TODO(payton): once stripe api is integrated, we can have multiple limits based on the tier of the user.
+        // For now default at 100 videos.
+        if (summaries.length > this.kMaxSummariesPerUser) {
+            summaries.shift();
+        }
+
         // if url already exists, update the summary on that url
         for (let i = 0; i < summaries.length; i++) {
             if (summaries[i][kFSUserSummariesUrlField] === url) {
@@ -74,6 +80,7 @@ class Database {
 
 
     private dbClient : Firestore;
+    private kMaxSummariesPerUser = 100;
 }
 
 export { Database };
