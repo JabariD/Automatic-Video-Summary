@@ -15,7 +15,8 @@ Note: Typically this will contain about 100-500 VideoSegments as a typical YouTu
 
 */
 
-const YoutubeTranscript = require('youtube-transcript').default;
+// const YoutubeTranscript = require('youtube-transcript').default;
+import { YoutubeTranscript } from 'youtube-transcript';
 
 // This interface defines 1 segment of the transcript
 interface VideoSegment {
@@ -25,7 +26,13 @@ interface VideoSegment {
 }
 
 async function getYouTubeTranscript(url: string): Promise<VideoSegment[]>  {
-    const transcript : Promise<VideoSegment[]> = await YoutubeTranscript.fetchTranscript(url);
+    if (YoutubeTranscript == undefined) {
+        throw new Error("YoutubeTranscript is undefined");
+    }
+
+    const transcript = await YoutubeTranscript.fetchTranscript(url);
+
+    // const transcript : Promise<VideoSegment[]> = await YoutubeTranscript.fetchTranscript(url);
     return transcript;
 }
 

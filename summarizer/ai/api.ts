@@ -69,7 +69,8 @@ class API {
     // - the reason is we have to send multiple request if the text is longer
     // - small number, summary will be shorter, but it will be more likely to less as more requests
     // 0 large number, summary will be longer, but it will be more likely to succeed as less requests
-    const chunks = textchunk.chunk(text, 12000);
+    // to be safe, we can chunk the text by 10000 characters.
+    const chunks = textchunk.chunk(text, 10000);
 
     if (!chunks) {
       throw new Error(
@@ -123,7 +124,7 @@ class API {
       throw new Error("Critical error. Text is empty.");
     }
 
-    if (this.countNumTokens(text) > this.kTokensCutOff_) {
+    if (this.countNumTokens(text) > 4096) {
       throw new Error(
         "Critical error. Text length exceeds API limit. Please split text into chunks of 3500 words or less."
       );
@@ -138,7 +139,7 @@ class API {
       {
         role: "user",
         content:
-          "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Here's the video transcription: " +
+          "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Use A LOT of emojis throughout the summary. Here's the video transcription: " +
           text,
       },
     ];
@@ -148,7 +149,7 @@ class API {
     // TODO(payton): Experiment with a different model. (hint hint Google model).
     const response = await this.OpenAiClient_.createChatCompletion({
       messages: starterInstructionsAndPrompt,
-      max_tokens: 650, // Note: Matches with kTokensCutOff_. For ref: https://platform.openai.com/docs/models/gpt-3-5
+      max_tokens: this.kMaxTokensOfResponse_, // Note: Matches with kTokensCutOff_. For ref: https://platform.openai.com/docs/models/gpt-3-5
       model: this.kModel_,
       temperature: 0.9, // higher temperature = more creative, less coherent | lower temperature = less creative, more focused and deterministic
       frequency_penalty: 1.2, // positive values penalize new tokens based on existing frequency | lower values increase the likelihood of new tokens based on existing frequency
@@ -177,6 +178,7 @@ class API {
   private kModel_ = "gpt-3.5-turbo";
   private encClient_ : Tiktoken;
   private kTokensCutOff_: number = 3400; // Note: Matches with max_tokens in SendRequestToAPI(). For ref: https://platform.openai.com/docs/models/gpt-3-5
+  private kMaxTokensOfResponse_ : number = 650;
   private OpenAiClient_: OpenAIApi;
 }
 

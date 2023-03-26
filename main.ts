@@ -1,40 +1,72 @@
-import { Summarizer } from './summarizer/summarizer';
-import { Transcript } from './transcript/transcript';
-import { SourceValidator }  from './valid_source/source_validator';
+import { Summarizer } from "./summarizer/summarizer";
+import { Transcript } from "./transcript/transcript";
+import { SourceValidator } from "./valid_source/source_validator";
+import { UserValidator } from "./valid_user/user_validator";
+import { Database } from "./db/database";
 
 // The main entry point for the system. This class is responsible for handling all the series of functions.
 class EntryPoint {
+  // Initialize the clients
   constructor() {
-    // Initialize the clients
+    this.userValidatorClient_ = new UserValidator();
     this.sourceValidatorClient_ = new SourceValidator();
     this.transcriptClient_ = new Transcript();
     this.summarizerClient_ = new Summarizer();
+
+    this.dbClient_ = new Database();
   }
 
-  async summarizeWebVideo(url: string): Promise<string> {
+  async summarizeWebVideo(url: string, email: string, action: string): Promise<string> {
+    if (action === "GET_SUMMARY") {
+      return await this.dbClient_.getSummaryForUser(email, url);
+    }
+
+    console.log("Summarizing video: " + url);
+
+    // Check source
     if (!this.sourceValidatorClient_.isValid(url)) {
       throw new Error("Invalid URL. The URL must be a YouTube URL with an ID.");
     }
 
+    // Check user
+    try {
+      console.log("Validating user...");
+      const isValid = await this.userValidatorClient_.validate(email);
+      if (!isValid) {
+        throw new Error("Invalid user. The user must be a valid subscriber.");
+      }
+    } catch (error) {
+      throw new Error("Error in validating user: " + error.message);
+    }
+
+    // Get transcript
     let transcript;
     try {
-      transcript = await this.transcriptClient_.getTranscript(url); 
+      console.log("Getting transcript...");
+      transcript = await this.transcriptClient_.getTranscript(url);
     } catch (error) {
+      await this.dbClient_.setSummaryForUser(email, url, error.message);
       throw new Error("Error in getting transcript: " + error.message);
     }
 
+    // Get summary and set summary in DB
     try {
+      console.log("Getting summary...");
       const summary = await this.summarizerClient_.getSummary(transcript);
+      await this.dbClient_.setSummaryForUser(email, url, summary);
       return summary;
     } catch (error) {
       console.log(error);
-      throw new Error("Error in getting summary: " + error.message);
+      await this.dbClient_.setSummaryForUser(email, url, error.message);
+      throw new Error("Error in getting/setting summary: " + error.message);
     }
   }
 
-  private sourceValidatorClient_ : SourceValidator;
-  private transcriptClient_ : Transcript;
-  private summarizerClient_ : Summarizer;
+  private userValidatorClient_: UserValidator;
+  private sourceValidatorClient_: SourceValidator;
+  private transcriptClient_: Transcript;
+  private summarizerClient_: Summarizer;
+  private dbClient_: Database;
 }
 
 export { EntryPoint as VideoSummarizer };
@@ -71,6 +103,4 @@ Files to include in zip file to AWS Elastic Beanstalk:
 - package.json
 - package-lock.json
 - tsconfig.json
-
-
 */

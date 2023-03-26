@@ -23,3 +23,6 @@ yarn-error.log*
 
 # Environment Variables
 .env
+
+# Build (ran with npm build or tsc)
+dist
