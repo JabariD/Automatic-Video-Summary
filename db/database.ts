@@ -1,4 +1,4 @@
-import { Firestore } from "@google-cloud/firestore";
+import { Firestore, FieldValue } from "@google-cloud/firestore";
 
 // Firestore (FS) Constants
 const kFSUserCollection = "users";
@@ -23,11 +23,13 @@ class Database {
 
         const querySnapshot = await query.get();
 
+        // If the user doesn't exist, create a new user with the given email and summary.
         if (querySnapshot.empty) {
             console.log("User not found. Creating user with email: " + email)
+
             await this.dbClient.collection(kFSUserCollection).add({
-                email: email,
-                summaries: {[kFSUserSummariesUrlField]: url, [kFSUserSummariesSummaryField]: summary}
+                /*kFSUserEmailField=*/email: email,
+                /*kFSUserSummariesField=*/summaries: FieldValue.arrayUnion({[kFSUserSummariesUrlField]: url, [kFSUserSummariesSummaryField]: summary})
             });
             return;
         }
@@ -58,12 +60,12 @@ class Database {
     // Returns the summary for the user if it exists. Otherwise, throws an error.
     public async getSummaryForUser(email: string, url: string): Promise<string> {
         const query = this.dbClient.collection(kFSUserCollection).where(kFSUserEmailField, '==', email);
-
         // Execute the query.
         const querySnapshot = await query.get();
 
         if (querySnapshot.empty) {
-            throw new Error("Unable to find user matching email: " + email);
+            console.log("Email not found. Returning empty string for summary for user with email: " + email);
+            return "";
         }
 
         const summaries = querySnapshot.docs[0].get(kFSUserSummariesField);
