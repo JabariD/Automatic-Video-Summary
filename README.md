@@ -1,4 +1,5 @@
-![Automatic Video Summary Logo](https://github.com/JabariD/Automatic-Video-Summary/blob/main/docs/logo.png?raw=true)
+<img width="322" alt="Automatic Video Summary Logo" src="https://user-images.githubusercontent.com/52969350/227816732-1caf64ff-686d-4028-b89b-a2a037a42489.png">
+
 
   
   
