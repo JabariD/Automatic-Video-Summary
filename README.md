@@ -61,4 +61,6 @@ If you get the error: The user-provided container failed to start and listen on 
 - So note: This means if (not your local instance) but if the remote machine cannot start your app and listen you get this error. So you have to give the remote machine everything it needs to do that. (in our case the package.json).
 
 ### Database
-Plan is to use Firebase for now.
+Using Firebase [Simple schema](https://firebase.google.com/docs/firestore/data-model): `users => doc_auto_id => email, summaries:{url, summary} `.
+
+Note: Firebase is a little finicky. May sure to read docs and look up other examples of how to do your specific action.
