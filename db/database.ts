@@ -1,5 +1,5 @@
 import { Firestore, FieldValue } from "@google-cloud/firestore";
-const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 // Firestore (FS) Constants
 const kFSUserCollection = "users";
@@ -86,10 +86,7 @@ class Database {
 
     // Hashes the email
     public async hashEmail(email: string): Promise<string> {
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-        const hash = await bcrypt.hash(email, salt);
-        return hash;
+       return crypto.createHash('sha256').update(email).digest('hex');
     }
 
 
