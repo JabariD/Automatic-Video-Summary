@@ -8,10 +8,8 @@ ACTIONS=SUMMARIZE
 // TODO(payton): Convert this to express function.
 exports.summarize = (req, res) => {
     const url = req.query.url;
-    const email = req.query.email;
+    const email = req.body.email;
     const action = req.query.action;
-
-    const actions = ["GET_SUMMARY", "SUMMARIZE"]
 
     // Allow CORS
     res.set('Access-Control-Allow-Origin', "*");

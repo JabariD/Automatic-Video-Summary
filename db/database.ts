@@ -1,4 +1,5 @@
 import { Firestore, FieldValue } from "@google-cloud/firestore";
+const bcrypt = require('bcrypt');
 
 // Firestore (FS) Constants
 const kFSUserCollection = "users";
@@ -19,16 +20,18 @@ class Database {
 
     // Sets the summary for the user with the given email and url.
     public async setSummaryForUser(email: string, url: string, summary: string): Promise<void> {
-        const query = this.dbClient.collection(kFSUserCollection).where(kFSUserEmailField, '==', email);
+        // Hash the email.
+        const hashedEmail = await this.hashEmail(email);
+        const query = this.dbClient.collection(kFSUserCollection).where(kFSUserEmailField, '==', hashedEmail);
 
         const querySnapshot = await query.get();
 
         // If the user doesn't exist, create a new user with the given email and summary.
         if (querySnapshot.empty) {
-            console.log("User not found. Creating user with email: " + email)
+            console.log("User not found. Creating user with email: " + hashedEmail)
 
             await this.dbClient.collection(kFSUserCollection).add({
-                /*kFSUserEmailField=*/email: email,
+                /*kFSUserEmailField=*/email: hashedEmail,
                 /*kFSUserSummariesField=*/summaries: FieldValue.arrayUnion({[kFSUserSummariesUrlField]: url, [kFSUserSummariesSummaryField]: summary})
             });
             return;
@@ -59,7 +62,8 @@ class Database {
 
     // Returns the summary for the user if it exists. Otherwise, throws an error.
     public async getSummaryForUser(email: string, url: string): Promise<string> {
-        const query = this.dbClient.collection(kFSUserCollection).where(kFSUserEmailField, '==', email);
+        const hashedEmail = await this.hashEmail(email);
+        const query = this.dbClient.collection(kFSUserCollection).where(kFSUserEmailField, '==', hashedEmail);
         // Execute the query.
         const querySnapshot = await query.get();
 
@@ -78,6 +82,14 @@ class Database {
         }
         
         throw new Error("Unable to find summary for user with email: " + email + " and url: " + url);
+    }
+
+    // Hashes the email
+    public async hashEmail(email: string): Promise<string> {
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hash = await bcrypt.hash(email, salt);
+        return hash;
     }
 
 
