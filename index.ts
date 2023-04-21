@@ -8,7 +8,7 @@ import { VideoSummarizer } from "./main";
 
 const app = express();
 
-// app.use();
+app.use(express.json());
 
 /** EXTENSION */
 
@@ -49,18 +49,16 @@ app.get('/ext/get-summary', (req, res) => {
 
 /** Summarizes a YouTube video.
  * 
- * @param {string} url - The URL of the YouTube video to summarize.
- * @param {string} prompt - The prompt to use for the summarizer.
+ * @param {string} url - The URL of the YouTube video to summarize. (In the Body)
+ * @param {string} prompt - The prompt to use for the summarizer. (In the Body)
  * @param {string} apiKey - The API key to use for the summarizer. (In the Body)
  * @returns {string} The summary of the video.
  */
 app.post('/summarize', async(req, res) => { 
     // Parse query params
-    const url = req.query.url as string;
-    const prompt = req.query.prompt as string;
-
-    const reqBody = JSON.parse(req.body);
-    const apiKey = reqBody.apiKey as string;
+    const url : string = req.body.url;
+    const prompt : string = req.body.prompt;
+    const apiKey : string = req.body.apiKey;
 
     // Allow CORS
     res.set('Access-Control-Allow-Origin', "*");
