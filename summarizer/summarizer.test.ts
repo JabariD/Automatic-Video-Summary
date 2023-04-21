@@ -79,10 +79,10 @@ describe("Summarizer", () => {
     ];
 
     const summarizer = new Summarizer();
-    const summary = await summarizer.getSummary(videoSegments);
+    const summary = await summarizer.getSummary(videoSegments, /*options=*/{});
 
     console.log(summary);
 
     expect(summary).toContain("elephants");
-  });
+  }, 100000);
 });

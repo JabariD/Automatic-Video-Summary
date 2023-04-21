@@ -9,16 +9,22 @@ Feel free to install or uninstall.
 require("dotenv").config();
 
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-
+import { SummarizerOptions } from "../../util/interfaces";
+import Util from "../../util/util";
 import { encoding_for_model, Tiktoken } from "@dqbd/tiktoken";
 
 var textchunk = require('textchunk');
 
 class API {
-  // Constructor for API class that initializes OpenAI client.
+  // Constructor for API class that initializes Encoder client.
   constructor() {
+    this.encClient_ = encoding_for_model("gpt-3.5-turbo");
+  }
+
+  // Configures the Open AI API client.
+  private configureApiClient(options: SummarizerOptions) {
     // Attempt to get API key from environment variables
-    const api_key_or_error = this.getApiKey();
+    const api_key_or_error = this.getApiKey(options);
     if (api_key_or_error instanceof Error) {
       throw api_key_or_error;
     }
@@ -27,23 +33,25 @@ class API {
       apiKey: api_key_or_error.toString(),
     });
 
-    this.encClient_ = encoding_for_model("gpt-3.5-turbo");
     this.OpenAiClient_ = new OpenAIApi(configuration);
   }
 
   // Main entry point of API. Returns a summary of the video. Returns an error if there is an error.
-  async summarizeVideo(text: string): Promise<string> {
+  async summarizeVideo(text: string, options: SummarizerOptions): Promise<string> {
+    // Note: This must be called before any other API calls.
+    this.configureApiClient(options);
+
     // if text > tokens https://platform.openai.com/docs/guides/chat/managing-tokens
     let combinedSummarizedText: string;
     try {
-      combinedSummarizedText = await this.recursivelySummarize(text);
+      combinedSummarizedText = await this.recursivelySummarize(text, options);
     } catch (error) {
       return error;
     }
 
     let response: string;
     try {
-      response = await this.sendRequestToAPI(combinedSummarizedText);
+      response = await this.sendRequestToAPI(combinedSummarizedText, options);
     } catch (error) {
       return error;
     }
@@ -53,7 +61,7 @@ class API {
 
   // If text is > kTokensCutOff_, then split text into chunks of 3500 words and summarize each chunk, then combine all summaries into one summary.
   // If the combined summary is more than ktokenscutoff do the same thing until the summary is less than kTokensCutOff_. Then send to API and return response.
-  private async recursivelySummarize(text: string): Promise<string> {
+  private async recursivelySummarize(text: string, options: SummarizerOptions): Promise<string> {
     console.log("Entering Chunking Layer");
     console.log("tokens in text: ", this.countNumTokens(text));
     if (this.countNumTokens(text) <= this.kTokensCutOff_) {
@@ -84,7 +92,7 @@ class API {
     for (const chunk of chunks) {
       try {
         console.log("num of tokens in chunk: " + this.countNumTokens(chunk));
-        const summary = await this.sendRequestToAPI(chunk);
+        const summary = await this.sendRequestToAPI(chunk, options);
         // sleep for 2 seconds to avoid rate limit
         await this.sleep(/*sec=*/1);
 
@@ -102,23 +110,23 @@ class API {
       combinedSummaries += summary;
     }
 
-    return this.recursivelySummarize(combinedSummaries);
+    return this.recursivelySummarize(combinedSummaries, options);
   }
 
-  // Returns API key from environment variables or error if not found.
-  private getApiKey(): string | Error {
-    return process.env.API_KEY
-      ? process.env.API_KEY
-      : new Error(
-          "API_KEY not found in environment variables. Please set API_KEY in .env file."
-        );
+  // Returns API key from options, else return API key from environment variables.
+  private getApiKey(options: SummarizerOptions): string | Error {
+    // Get valid Api Key
+    if (!Util.isNullOrUndefined(options.custom_api_key)) {  
+      return options.custom_api_key;
+    }
+
+    return Util.isNullOrUndefined(process.env.API_KEY) ? new Error("API_KEY not found in environment variables. Please set API_KEY in .env file.") : process.env.API_KEY;
   }
 
   // Sends request to API and returns response or error.
   // Docs: https://platform.openai.com/docs/guides/chat/introduction
-  // TODO(payton): Change signature to sendRequestToAPI(createChatCompletionRequest(systemMessage, message), modelOptions);
   // TODO(payton): Modify signature to return interface response.
-  private async sendRequestToAPI(text: string): Promise<any> {
+  private async sendRequestToAPI(text: string, options : SummarizerOptions): Promise<any> {
     // Confirm meets API limit requirements. It's good to put this logic here an API call must MEET these guidelines. If it doesn't we get error.
     if (text.length == 0) {
       throw new Error("Critical error. Text is empty.");
@@ -130,6 +138,8 @@ class API {
       );
     }
 
+    const prompt = `${Util.isNullOrUndefined(options.prompt) ? this.kDefaultPrompt_ : options.prompt}.  Here's the video transcription: '${text}'`
+
     const starterInstructionsAndPrompt: ChatCompletionRequestMessage[] = [
       {
         role: "system",
@@ -139,8 +149,7 @@ class API {
       {
         role: "user",
         content:
-          "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Use A LOT of emojis throughout the summary. Here's the video transcription: " +
-          text,
+          prompt,
       },
     ];
 
@@ -158,12 +167,6 @@ class API {
     return response.data.choices[0].message?.content;
   }
 
-  // Returns number of words in text.
-  // Deprecated: Use countNumTokens() instead.
-  private countWords(text: string): number {
-    return text.split(" ").length;
-  }
-
   private sleep(sec: number) {
     return new Promise((resolve) => setTimeout(resolve, sec * 1000));
   }
@@ -175,10 +178,13 @@ class API {
     return this.encClient_.encode(text).length;
   }
 
+  private kDefaultPrompt_ = "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Use A LOT of emojis throughout the summary.";
   private kModel_ = "gpt-3.5-turbo";
-  private encClient_ : Tiktoken;
+
   private kTokensCutOff_: number = 3400; // Note: Matches with max_tokens in SendRequestToAPI(). For ref: https://platform.openai.com/docs/models/gpt-3-5
   private kMaxTokensOfResponse_ : number = 650;
+
+  private encClient_ : Tiktoken;
   private OpenAiClient_: OpenAIApi;
 }
 

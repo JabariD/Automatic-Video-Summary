@@ -4,6 +4,8 @@ import { SourceValidator } from "./valid_source/source_validator";
 import { UserValidator } from "./valid_user/user_validator";
 import { Database } from "./db/database";
 
+import { SummarizerOptions } from "./util/interfaces";
+
 // The main entry point for the system. This class is responsible for handling all the series of functions.
 class EntryPoint {
   // Initialize the clients
@@ -14,6 +16,27 @@ class EntryPoint {
     this.summarizerClient_ = new Summarizer();
 
     this.dbClient_ = new Database();
+  }
+
+  // Summarizes a YouTube video given the url and options.
+  async summarizeYouTubeVideo(url: string, options: SummarizerOptions): Promise<string> {
+    // Check source
+    if (!this.sourceValidatorClient_.isValid(url)) {
+      throw new Error("Invalid URL. The URL must be a YouTube URL with an ID.");
+    } 
+
+    // Check transcript
+    console.log("Getting transcript...");
+    let transcript;
+    try {
+      transcript = await this.transcriptClient_.getTranscript(url);
+    } catch (error) {
+      throw new Error("Error in getting transcript: " + error.message);
+    }
+
+    // Summarize the video
+    console.log("Summarizing video.");
+    return await this.summarizerClient_.getSummary(transcript, options);
   }
 
   async summarizeWebVideo(url: string, email: string, action: string): Promise<string> {
@@ -52,7 +75,7 @@ class EntryPoint {
     // Get summary and set summary in DB
     try {
       console.log("Getting summary...");
-      const summary = await this.summarizerClient_.getSummary(transcript);
+      const summary = await this.summarizerClient_.getSummary(transcript, {});
       await this.dbClient_.setSummaryForUser(email, url, summary);
       return summary;
     } catch (error) {

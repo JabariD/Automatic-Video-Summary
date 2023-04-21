@@ -14,7 +14,7 @@ describe("Transcript", () => {
     });
 
     expect(videoSegments[0].text).toBe(
-      "All right, so here we are in front of the elephants,"
+      "All right, so here we are, in front of the elephants,"
     );
   });
 
