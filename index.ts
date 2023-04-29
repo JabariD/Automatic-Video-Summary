@@ -13,7 +13,7 @@ app.use(express.json());
 /** EXTENSION */
 
 // Returns the summary for the user when on the given URL.
-app.get('/ext/get-summary', (req, res) => { 
+app.post('/ext/get-summary', (req, res) => { 
     const url = req.query.url;
 
     const reqBody = JSON.parse(req.body);
