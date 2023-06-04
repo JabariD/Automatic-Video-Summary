@@ -1,7 +1,7 @@
 /** Describes settings that can be set by the user to allow for custom behavior. */
 export interface SummarizerOptions {
-    prompt?: string; // Prompt to use for the summarizer
-    custom_api_key?: string; // Custom API key to use for the summarizer
+    prompt?: string; // OPTIONAL: Prompt to use for the summarizer
+    custom_api_key?: string; // OPTIONAL: Custom API key to use for the summarizer
 };
 
 /** Similar to absl::Status, returns a status with a custom string. */

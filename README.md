@@ -55,6 +55,29 @@ For the backend hosting we are using Google Cloud Run Functions. This assumes yo
 - Notice the src is the dist. (which is why we to npm run build)
 - `summarize` is the JavaScript function that Google Cloud looks for to build. (the function path is in ./dist/index.js)
 
+#### AI
+There are 2 AIs' experimented with: OpenAI gpt-3.5-turbo and Google Palm API v2. 
+
+##### About the AI's
+gpt-3.5-turbo
+- Results:
+- Skillset:
+- Token Limit: 3k input token limit.
+- Options
+- Problems
+- Conclusion
+
+Google Palm API v2
+- Results:
+- Skillset:
+- Token Limit: 8k input token limit
+- Options
+- Problems
+- Conclusion
+
+##### Code Logic
+If the user includes an API Key default use Open AI API. Otherwise use Google Palm API. Therefore using Google Palm API by default.
+
 #### Debugging
 If you get the error: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable.
 - This doesn't mean our container didn't listen to proper port, but that it FAILED TO START. 

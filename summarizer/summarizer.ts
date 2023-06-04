@@ -1,5 +1,7 @@
 import { VideoSegment } from '../transcript/youtube/youtube';
 import API from "./ai/api"
+import API2 from './ai/api_2';
+import Util from '../util/util';
 import { SummarizerOptions } from '../util/interfaces';
 
 // Summarizer 
@@ -7,6 +9,7 @@ class Summarizer {
     constructor() {
         // Summarizer must have valid API instance to work.
         this.API_ = new API();
+        this.API2_ = new API2();
     }
     
     // Public function to summarize the video segments. Returns Error if there is an error in the summarization process.
@@ -22,7 +25,17 @@ class Summarizer {
     private async summarize(videoSegments: VideoSegment[], options: SummarizerOptions) : Promise<string> {
         // Normalizes the video segments.
         const sanitizedText : string = this.normalizeText(videoSegments);
-        return await this.API_.summarizeVideo(sanitizedText, options);
+
+        // Summarizes the video.
+
+        if (!Util.isNullOrUndefined(options.custom_api_key) || !Util.isNullOrUndefined(options.prompt)) {
+            // Open AI API
+            return await this.API_.summarizeVideo(sanitizedText, options);
+        } 
+        
+        // Google API
+        return await this.API2_.summarizeVideo(sanitizedText, options);
+        
     }
 
     // Returns a normalized (i.e. no special characters, no extra spaces) string of the text in the video segments.
@@ -39,6 +52,7 @@ class Summarizer {
       }
 
     private API_ : API;
+    private API2_ : API2;
 
 };
 

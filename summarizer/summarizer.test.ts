@@ -59,7 +59,37 @@ describe("Summarizer", () => {
     expect(sanitizedText).toBe("foo-bar normalized checker,");
   });
 
-  it("should summarize video segments", async () => {
+  // Open AI based off the options parameter.
+  it("should summarize video segments Open AI", async () => {
+    const videoSegments: VideoSegment[] = [
+      {
+        text: "All right, so here we are in front of the, uh, elephants   \n",
+        duration: 3000,
+        offset: 0,
+      },
+      {
+        text: ", and the cool thing about these guys is that, is that they have really, really",
+        duration: 6000,
+        offset: 3000,
+      },
+      {
+        text: ", really long, um, trunks, and that's, that's cool, and that's pretty much all there is to say.",
+        duration: 9000,
+        offset: 6000,
+      },
+    ];
+
+    const summarizer = new Summarizer();
+    const summary = await summarizer.getSummary(videoSegments, /*options=*/{prompt: "What makes this video funny? Include the word 'crumbs' in your answer."});
+
+    console.log(summary);
+
+    expect(summary).toContain("elephants");
+    expect(summary).toContain("crumbs");
+  }, 100000);
+
+  // Google AI based off the options parameter.
+  it("should summarize video segments Google AI", async () => {
     const videoSegments: VideoSegment[] = [
       {
         text: "All right, so here we are in front of the, uh, elephants   \n",
