@@ -47,13 +47,20 @@ For the backend we are using TypeScript, Node.js, and Jest.
 - To simply run a TypeScript file, I think we need to convert it. So use `tsc filepath` and then `node filepath`.
 	- This can cause problems with having this file involved in uploading test, so we typically ran files using jest test
 
-For the backend hosting we are using Google Cloud Run Functions. This assumes you already have a project and billing. You also need to install the Google Cloud CLI. Before uploading to Google Cloud make sure to run `npm run build`. These can be built/updated by using this command `gcloud functions deploy summarizer-gcloud-func --gen2 --region=us-central1 --runtime=nodejs18 --source=./dist --entry-point=summarize`
+For the backend hosting we are using Google Cloud Run Functions. This assumes you already have a project and billing. You also need to install the Google Cloud CLI. Before uploading to Google Cloud make sure to run `npm run build`. These can be built/updated by using this command `gcloud functions deploy summarizer-gcloud-func --gen2 --region=us-central1 --runtime=nodejs18 --source=./dist --entry-point=summarize --set-build-env-vars=GOOGLE_NODE_RUN_SCRIPTS=""` taken from here: https://cloud.google.com/functions/docs/deploy#basics.
 - `summarizer-gcloud-func` - Is the official name of the function that appears in Google Cloud.
 - We are using `gen2`
 - The region we are deploying is `us-central1`
 - The runtime we are using is nodejs18
 - Notice the src is the dist. (which is why we to npm run build)
 - `summarize` is the JavaScript function that Google Cloud looks for to build. (the function path is in ./dist/index.js)
+- `--set-build-env-vars=GOOGLE_NODE_RUN_SCRIPTS=""` was recently added. This flag is used with npm to specify a list of scripts to run in a specific order after installing dependencies. The scripts are listed in a comma-separated format. By using this flag, you can control which scripts to run and in what sequence. For instance, you can exclude the default "build" script from running by not providing a value for the flag. See more here https://cloud.google.com/functions/docs/release-notes#April_11_2023 and https://cloud.google.com/docs/buildpacks/nodejs#google_node_run_scripts.
+
+So, in summary to deploy:
+1. Confirm your changes are in `/dist` directory by running `tsc` command.
+2. Run the above command.
+
+Note: If you recently added a package, MAKE SURE package.json is updated in dist.
 
 #### AI
 There are 2 AIs' experimented with: OpenAI gpt-3.5-turbo and Google Palm API v2. 
