@@ -4,11 +4,17 @@
  */
 
 import express from 'express'; 
+import cors from 'cors';
 import { VideoSummarizer } from "./main";
 
 const app = express();
 
-app.use(express.json());
+// Automatically allow cross-origin requests
+app.use(cors());
+// Convert to 
+// const corsOption = {
+//     origin: ['http://localhost:3000'],
+// };
 
 /** EXTENSION */
 
