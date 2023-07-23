@@ -30,11 +30,12 @@ class Summarizer {
 
         if (!Util.isNullOrUndefined(options.custom_api_key) || !Util.isNullOrUndefined(options.prompt)) {
             // Open AI API
-            return await this.API_.summarizeVideo(sanitizedText, options);
+            
         } 
+        return await this.API_.summarizeVideo(sanitizedText, options);
         
         // Google API
-        return await this.API2_.summarizeVideo(sanitizedText, options);
+        // return await this.API2_.summarizeVideo(sanitizedText, options);
         
     }
 

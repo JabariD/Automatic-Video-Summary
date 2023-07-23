@@ -18,7 +18,7 @@ var textchunk = require('textchunk');
 class API {
   // Constructor for API class that initializes Encoder client.
   constructor() {
-    this.encClient_ = encoding_for_model("gpt-3.5-turbo");
+    this.encClient_ = encoding_for_model("gpt-4");
   }
 
   // Configures the Open AI API client.
@@ -179,7 +179,7 @@ class API {
   }
 
   private kDefaultPrompt_ = "Summarize the following video. Be detailed and extract the key point of what was made (not just the topic). Be smart and add your own knowledge, but relevant. Use A LOT of emojis throughout the summary.";
-  private kModel_ = "gpt-3.5-turbo";
+  private kModel_ = "gpt-4";
 
   private kTokensCutOff_: number = 3400; // Note: Matches with max_tokens in SendRequestToAPI(). For ref: https://platform.openai.com/docs/models/gpt-3-5
   private kMaxTokensOfResponse_ : number = 650;

@@ -21,6 +21,7 @@ app.use(cors());
 // Returns the summary for the user when on the given URL.
 app.post('/ext/get-summary', (req, res) => { 
     const url = req.query.url;
+    const action = req.query.action;
 
     const reqBody = JSON.parse(req.body);
     const email = reqBody.email;
@@ -38,13 +39,13 @@ app.post('/ext/get-summary', (req, res) => {
         return;
     }
 
-    async function summarizeWebVideo(url: any, email: string, action: string) : Promise<string> {
+    async function summarizeWebVideo(url: any, email: string, action: any) : Promise<string> {
         const service = new VideoSummarizer();
         const summary = await service.summarizeWebVideo(url, email, action);
         return summary;
     }
 
-    summarizeWebVideo(url, email, "").then((summary) => {
+    summarizeWebVideo(url, email, action).then((summary) => {
         res.status(200).json(summary);
     }).catch((error) => {
         res.status(500).json(error.message);
